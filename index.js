@@ -46,11 +46,51 @@ async function run() {
       res.json(result)
     })
 
+    //get api for finding my orders
+    app.get('/myorders', async (req, res)=> {
+      const userEmail = req.query.email;
+      const query = {ownerEmail: userEmail};
+      const cursor = orderCollection.find(query);
+      const result = await cursor.toArray();
+      res.json(result);
+    })
+    
+    //get api for finding all orders 
+    app.get('/orders', async (req, res)=>{
+      const cursor = orderCollection.find({});
+      const result = await cursor.toArray();
+      res.json(result);
+    })
+
     //post api for creating new order
     app.post('/orders/neworder', async (req, res)=>{
       const doc = req.body;
       const result = await orderCollection.insertOne(doc);
       res.json(result);
+    })
+    
+    //delete api for deleting an order
+    app.delete('/deleteorder/:id', async (req, res)=>{
+      const Id = req.params.id;
+      const query = { _id: ObjectId(Id) };
+      const result = await orderCollection.deleteOne(query);
+      res.json(result);
+
+    })
+
+    //update api for updating order status
+    app.put('/orders/:id', async (req, res)=>{
+      const Id = req.params.id;
+      const filter = { _id: ObjectId(Id) };
+      const options = { upsert: true };
+      const updatedDoc = req.body;
+      const updateDoc = {
+        $set: {
+          status: updatedDoc.status
+        }
+      };
+      const result = await orderCollection.updateOne(filter, updateDoc, options);
+      res.json(result)
     })
 
   } finally {
