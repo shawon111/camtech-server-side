@@ -23,6 +23,7 @@ async function run() {
     const cameraCollection = database.collection("cameras");
     const reviewsCollection = database.collection("reviews");
     const orderCollection = database.collection("orders");
+    const userCollection = database.collection("registeredUsers");
 
     //get api for showing products
     app.get('/products', async (req, res) => {
@@ -82,6 +83,13 @@ async function run() {
       const result = await reviewsCollection.insertOne(doc);
       res.json(result);
     })
+
+    //post api for creating user in database
+    app.post('/createuser', async (req, res)=> {
+      const doc = req.body;
+      const result = await userCollection.insertOne(doc);
+      res.json(result);
+    })
     
     //delete api for deleting an order
     app.delete('/deleteorder/:id', async (req, res)=>{
@@ -105,6 +113,22 @@ async function run() {
       };
       const result = await orderCollection.updateOne(filter, updateDoc, options);
       res.json(result)
+    })
+
+    //update api for updating order status
+    app.put('/makeadmin/:email', async (req, res)=> {
+      const Email = req.params.email;
+      const filter = {userEmail: Email}
+      const options = { upsert: true };
+      const updatedDoc = req.body;
+      const updateDoc = {
+        $set: {
+          isAdmin: updatedDoc.isAdmin
+        }
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.json(result);
+      console.log(updatedDoc.isAdmin);
     })
 
   } finally {
