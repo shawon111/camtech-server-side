@@ -72,6 +72,7 @@ async function run() {
       
     })
 
+
     //post api for creating new order
     app.post('/orders/neworder', async (req, res)=>{
       const doc = req.body;
@@ -107,6 +108,14 @@ async function run() {
       const result = await orderCollection.deleteOne(query);
       res.json(result);
 
+    })
+
+    //delete api for deleting an product
+    app.delete('/delete/product/:id', async(req, res)=>{
+      const Id = req.params.id;
+      const query = { _id: ObjectId(Id) };
+      const result = await cameraCollection.deleteOne(query);
+      res.json(result);
     })
 
     //update api for updating order status
