@@ -68,6 +68,20 @@ async function run() {
       const result = await orderCollection.insertOne(doc);
       res.json(result);
     })
+
+    //post api for adding new product
+    app.post('/addproduct', async (req, res) => {
+      const doc = req.body;
+      const result = await cameraCollection.insertOne(doc);
+      res.json(result);
+    })
+
+    //post api for adding review
+    app.post('/addreview', async (req, res) => {
+      const doc = req.body;
+      const result = await reviewsCollection.insertOne(doc);
+      res.json(result);
+    })
     
     //delete api for deleting an order
     app.delete('/deleteorder/:id', async (req, res)=>{
