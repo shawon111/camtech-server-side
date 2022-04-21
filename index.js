@@ -24,6 +24,7 @@ async function run() {
     const reviewsCollection = database.collection("reviews");
     const orderCollection = database.collection("orders");
     const userCollection = database.collection("registeredUsers");
+    const featuredProducts = database.collection("featured_products");
 
     //get api for showing products
     app.get('/products', async (req, res) => {
@@ -70,6 +71,24 @@ async function run() {
       const result = await userCollection.findOne(query);
       res.json(result);
       
+    })
+
+    // get api for featured products
+    app.get('/featured', async (req, res) =>{
+      const cursor = featuredProducts.find({});
+      const featured = await cursor.toArray();
+      // console.log(featureds);
+      const products = [];
+      for (const item of featured){
+        const Id = item.f_product_id;
+        const query = {_id: ObjectId(Id)};
+        // console.log("item id", item.f_product_id);
+        const product = await cameraCollection.findOne(query);
+        products.push(product);
+        // console.log("product" ,product);
+      }
+      // console.log('products',products);
+      res.json(products);
     })
 
 
